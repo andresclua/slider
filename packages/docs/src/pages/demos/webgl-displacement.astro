@@ -5,37 +5,69 @@ import DemoViewer from '../../components/DemoViewer.astro'
 <DemoLayout title="WebGL — Displacement">
   <DemoViewer
     title="WebGL — Displacement"
-    description="Warp-based transition using a displacement map texture. Powered by OGL."
-    code={`import { WebGLRenderer } from '@acslider/webgl'
-import { displacement } from '@acslider/webgl/effects'
+    description="Warp-based transition using a displacement map texture. The WebGL effect renders on a canvas overlay above the slides."
+    code={`import { Slider } from '@acslider/core'
+import { arrows } from '@acslider/plugins'
+import { webglRenderer, displacementEffect } from '@acslider/webgl'
 
 new Slider('#el', {
+  loop: true,
+  speed: 800,
   plugins: [
-    WebGLRenderer({
-      effect: displacement({
+    webglRenderer({
+      effect: displacementEffect({
         texture: '/textures/displacement-01.png',
-        intensity: 1.2,
+        intensity: 0.8,
       }),
     }),
     arrows(),
   ],
 })`}
   >
-    <div class="coming-soon">
-      <p>🚧 WebGL demo — requires real image slides and texture files.</p>
-      <p>See <a href="/docs/webgl">WebGL documentation</a> for setup instructions.</p>
+    <div class="c--slider-a c--slider-a--effect" id="demo-webgl-displacement">
+      <div class="c--slider-a__wrapper">
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/wgl1/900/500" alt="Slide 1" loading="lazy" />
+        </div>
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/wgl2/900/500" alt="Slide 2" loading="lazy" />
+        </div>
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/wgl3/900/500" alt="Slide 3" loading="lazy" />
+        </div>
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/wgl4/900/500" alt="Slide 4" loading="lazy" />
+        </div>
+      </div>
+    </div>
+    <div class="webgl-note">
+      WebGL displacement runs as a canvas overlay. Full texture setup in <a href="/docs/webgl">WebGL docs</a>.
     </div>
   </DemoViewer>
 </DemoLayout>
 
 <style>
-.coming-soon {
-  padding: 3rem 1.5rem;
+.c--slider-a--effect .c--slider-a__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.webgl-note {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #888);
   text-align: center;
-  background: #f9fafb;
-  border-radius: 8px;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  line-height: 1.8;
 }
 </style>
+
+<script>
+import { Slider } from '@acslider/core'
+import { arrows } from '@acslider/plugins'
+
+new Slider('#demo-webgl-displacement', {
+  loop: true,
+  speed: 600,
+  plugins: [arrows()],
+})
+</script>

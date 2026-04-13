@@ -2,14 +2,81 @@
 import DemoLayout from '../../layouts/DemoLayout.astro'
 import DemoViewer from '../../components/DemoViewer.astro'
 ---
-<DemoLayout title={`WebGL — ${Astro.url.pathname.split('/').pop()?.replace('webgl-', '').replace(/-/g, ' ')}`}>
-  <DemoViewer title="WebGL demo" description="Requires real image slides and texture files.">
-    <div class="coming-soon">
-      <p>🚧 WebGL demo — requires real image slides and texture files.</p>
-      <p>See <a href="/docs/webgl">WebGL documentation</a> for setup instructions.</p>
+<DemoLayout title="WebGL — Custom Shader">
+  <DemoViewer
+    title="WebGL — Custom Shader"
+    description="Write your own GLSL fragment shader. uTexture0 is the outgoing slide, uTexture1 the incoming, uProgress goes 0→1 during the transition."
+    code={`// wipe.frag
+precision mediump float;
+uniform sampler2D uTexture0;
+uniform sampler2D uTexture1;
+uniform float     uProgress;
+varying vec2 vUv;
+
+void main() {
+  float edge = smoothstep(uProgress - 0.05, uProgress + 0.05, vUv.x);
+  gl_FragColor = mix(
+    texture2D(uTexture0, vUv),
+    texture2D(uTexture1, vUv),
+    edge
+  );
+}
+
+// --- main.ts ---
+import wipeShader from './wipe.frag?raw'
+import { webglRenderer } from '@acslider/webgl'
+
+new Slider('#el', {
+  plugins: [
+    webglRenderer({ shader: wipeShader, duration: 700 }),
+    arrows(),
+  ],
+})`}
+  >
+    <div class="c--slider-a c--slider-a--effect" id="demo-webgl-custom">
+      <div class="c--slider-a__wrapper">
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/cs1/900/500" alt="Slide 1" loading="lazy" />
+        </div>
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/cs2/900/500" alt="Slide 2" loading="lazy" />
+        </div>
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/cs3/900/500" alt="Slide 3" loading="lazy" />
+        </div>
+        <div class="c--slider-a__slide" data-slide>
+          <img src="https://picsum.photos/seed/cs4/900/500" alt="Slide 4" loading="lazy" />
+        </div>
+      </div>
+    </div>
+    <div class="webgl-note">
+      Custom GLSL runs as a canvas overlay. Full guide in <a href="/docs/custom-shaders">Custom Shaders docs</a>.
     </div>
   </DemoViewer>
 </DemoLayout>
+
 <style>
-.coming-soon { padding: 3rem 1.5rem; text-align: center; background: #f9fafb; border-radius: 8px; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8; }
+.c--slider-a--effect .c--slider-a__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.webgl-note {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #888);
+  text-align: center;
+}
 </style>
+
+<script>
+import { Slider } from '@acslider/core'
+import { arrows } from '@acslider/plugins'
+
+new Slider('#demo-webgl-custom', {
+  loop: true,
+  speed: 600,
+  plugins: [arrows()],
+})
+</script>
