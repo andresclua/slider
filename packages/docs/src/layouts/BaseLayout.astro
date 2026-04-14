@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css'
+
 interface Props {
   title?: string
   description?: string
@@ -13,7 +15,6 @@ const { title = 'ACSlider', description = 'A modern, accessible slider library' 
   <meta name="description" content={description} />
   <title>{title} — ACSlider</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="stylesheet" href="/src/styles/global.css" />
 </head>
 <body>
   <slot />
