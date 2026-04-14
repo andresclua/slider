@@ -261,6 +261,14 @@ export const DEMOS: DemoEntry[] = [
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
   {
+    slug: 'gsap-hooks',
+    label: 'GSAP Hooks',
+    title: 'GSAP — Text & Image Hooks',
+    description: 'Use beforeSlideChange and afterSlideChange to drive GSAP animations — staggered text reveals on a hero image slider, and per-element card entrances on a multi-slide layout.',
+    tags: ['gsap', 'animation', 'hooks', 'events', 'text', 'images', 'stagger'],
+    group: 'lifecycle',
+  },
+  {
     slug: 'destroy-rebuild',
     label: 'Destroy & Rebuild',
     title: 'Destroy & Rebuild',

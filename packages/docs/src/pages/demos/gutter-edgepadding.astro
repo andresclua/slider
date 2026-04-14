@@ -90,12 +90,239 @@ new Slider('#my-slider', {
     </div>
     <div id="demo-gutter-pag" class="c--slider-a__pagination"></div>
   </DemoViewer>
+
+  <DemoViewer
+    title="Center focus — active slide scales up (GSAP)"
+    description="edgePadding makes adjacent slides peek in from the sides. On every slide change GSAP animates the active slide to scale(1) and all others to scale(0.85), drawing the eye to the centre item. The outer wrapper clips the overflow so the sides look intentionally cropped."
+    html={`<div class="center-wrap">
+  <div class="c--slider-a" id="my-slider">
+    <div class="c--slider-a__wrapper">
+      <div class="c--slider-a__slide slide-img" style="background-image:url('https://picsum.photos/seed/cf1/800/400')"></div>
+      <div class="c--slider-a__slide slide-img" style="background-image:url('https://picsum.photos/seed/cf2/800/400')"></div>
+      <div class="c--slider-a__slide slide-img" style="background-image:url('https://picsum.photos/seed/cf3/800/400')"></div>
+      <div class="c--slider-a__slide slide-img" style="background-image:url('https://picsum.photos/seed/cf4/800/400')"></div>
+      <div class="c--slider-a__slide slide-img" style="background-image:url('https://picsum.photos/seed/cf5/800/400')"></div>
+    </div>
+  </div>
+</div>`}
+    css={`/* Outer wrapper clips the overflow */
+.center-wrap {
+  overflow: hidden;
+  border-radius: 8px;
+}
+/* Slider itself overflows so scale is visible */
+.center-wrap .c--slider-a {
+  overflow: visible;
+  background: transparent;
+  border-radius: 0;
+}
+.slide-img {
+  height: 280px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  transform-origin: center center;
+}
+.c--slider-a__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.c--slider-a__arrow--prev { left: 12px; }
+.c--slider-a__arrow--next { right: 12px; }`}
+    js={`import { Slider } from '@acslider/core'
+import { arrows } from '@acslider/plugins'
+import { gsap } from 'gsap'
+
+const slider = new Slider('#my-slider', {
+  slidesPerPage: 1,
+  edgePadding: 64,
+  loop: true,
+  speed: 480,
+  plugins: [arrows()],
+})
+
+// Set initial state: all slides small, active at full size
+const el = document.querySelector('#my-slider')
+
+function syncScale() {
+  const all    = el.querySelectorAll('.c--slider-a__slide')
+  const active = el.querySelector('.c--slider-a__slide--active')
+  gsap.to(all,    { scale: 0.85, duration: 0.4, ease: 'power2.out' })
+  if (active)
+    gsap.to(active, { scale: 1,    duration: 0.4, ease: 'power2.out', overwrite: 'auto' })
+}
+
+// Initialise scale without animation
+gsap.set(el.querySelectorAll('.c--slider-a__slide'), { scale: 0.85 })
+gsap.set(el.querySelector('.c--slider-a__slide--active'), { scale: 1 })
+
+slider.on('afterSlideChange', syncScale)`}
+  >
+    <div class="center-wrap" id="center-outer">
+      <div class="c--slider-a" id="demo-center">
+        <div class="c--slider-a__wrapper">
+          <div class="c--slider-a__slide slide-img" data-slide style="background-image:url('https://picsum.photos/seed/cf1/800/400')"></div>
+          <div class="c--slider-a__slide slide-img" data-slide style="background-image:url('https://picsum.photos/seed/cf2/800/400')"></div>
+          <div class="c--slider-a__slide slide-img" data-slide style="background-image:url('https://picsum.photos/seed/cf3/800/400')"></div>
+          <div class="c--slider-a__slide slide-img" data-slide style="background-image:url('https://picsum.photos/seed/cf4/800/400')"></div>
+          <div class="c--slider-a__slide slide-img" data-slide style="background-image:url('https://picsum.photos/seed/cf5/800/400')"></div>
+        </div>
+      </div>
+    </div>
+  </DemoViewer>
+  <DemoViewer
+    title="Depth-of-field filmstrip (GSAP blur)"
+    description="5 slides are visible at once. The center slide is always sharp — adjacent slides get progressively more blur, mimicking a camera's depth of field. GSAP animates filter:blur() on every afterSlideChange so the blur transition is smooth rather than a hard swap."
+    html={`<div class="film-wrap">
+  <div class="c--slider-a" id="my-slider">
+    <div class="c--slider-a__wrapper">
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof1/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof2/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof3/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof4/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof5/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof6/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof7/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof8/600/360')"></div>
+    </div>
+  </div>
+</div>`}
+    css={`.film-wrap {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #111;
+}
+.film-slide {
+  height: 240px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  will-change: filter;
+}
+
+.c--slider-a__arrow {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  z-index: 10; width: 36px; height: 36px;
+  border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+.c--slider-a__arrow--prev { left: 4px; }
+.c--slider-a__arrow--next { right: 4px; }`}
+    js={`import { Slider } from '@acslider/core'
+import { arrows } from '@acslider/plugins'
+import { gsap } from 'gsap'
+
+// Blur indexed by DISTANCE from center (dist=0 → sharp, dist=1 → soft, dist=2 → heavy)
+// Visible positions:  [0]   [1]   [2]    [3]   [4]
+// Distance from [2]:   2     1     0      1     2
+// Blur applied:      12px   5px   0px    5px  12px
+const BLUR_BY_DIST = [0, 5, 12]
+
+const slider = new Slider('#my-slider', {
+  slidesPerPage: 5,
+  gutter: 6,
+  loop: true,
+  speed: 500,
+  plugins: [arrows()],
+})
+
+const slides = slider.slides
+
+function applyBlur(activeIndex) {
+  const n = slides.length
+  // center of visible window = activeIndex + 2
+  slides.forEach((slide, i) => {
+    const raw  = ((i - activeIndex - 2) % n + n) % n  // wrap-safe offset from center
+    const dist = Math.min(raw, n - raw)                // shortest circular distance
+    const px   = BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]
+    gsap.to(slide, { filter: \`blur(\${px}px)\`, duration: 0.45, ease: 'power2.out' })
+  })
+}
+
+// Set initial state without animating
+slides.forEach((slide, i) => {
+  const n    = slides.length
+  const raw  = ((i - slider.activeIndex - 2) % n + n) % n
+  const dist = Math.min(raw, n - raw)
+  gsap.set(slide, { filter: \`blur(\${BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]}px)\` })
+})
+
+slider.on('afterSlideChange', ({ index }) => applyBlur(index))`}
+  >
+    <div class="film-wrap" id="film-outer">
+      <div class="c--slider-a" id="demo-film">
+        <div class="c--slider-a__wrapper">
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof1/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof2/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof3/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof4/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof5/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof6/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof7/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof8/600/360')"></div>
+        </div>
+      </div>
+    </div>
+  </DemoViewer>
+
 </DemoLayout>
+
+<style>
+#center-outer {
+  overflow: hidden;
+  border-radius: 8px;
+}
+#demo-center {
+  overflow: visible;
+  background: transparent;
+  border-radius: 0;
+}
+#demo-center .slide-img {
+  height: 280px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  transform-origin: center center;
+}
+
+/* Filmstrip / depth-of-field demo */
+#film-outer {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #111;
+}
+#demo-film .film-slide {
+  height: 240px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  will-change: filter;
+}
+#demo-film .c--slider-a__arrow {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+}
+</style>
 
 <script>
 import { Slider } from '@acslider/core'
 import { arrows, pagination } from '@acslider/plugins'
+import { gsap } from 'gsap'
 
+// ── Demo 1: gutter + fraction pagination ─────────────────────────────────────
 new Slider('#demo-gutter', {
   slidesPerPage: 3,
   gutter: 16,
@@ -107,4 +334,65 @@ new Slider('#demo-gutter', {
     pagination({ el: '#demo-gutter-pag', type: 'fraction' }),
   ],
 })
+
+// ── Demo 2: center focus with GSAP scale ─────────────────────────────────────
+const centerSlider = new Slider('#demo-center', {
+  slidesPerPage: 1,
+  edgePadding: 64,
+  loop: true,
+  speed: 480,
+  plugins: [arrows()],
+})
+
+const centerEl = document.querySelector('#demo-center')!
+
+function syncCenterScale() {
+  const all    = centerEl.querySelectorAll('.c--slider-a__slide')
+  const active = centerEl.querySelector('.c--slider-a__slide--active')
+  gsap.to(all,    { scale: 0.85, duration: 0.4, ease: 'power2.out' })
+  if (active)
+    gsap.to(active, { scale: 1,    duration: 0.4, ease: 'power2.out', overwrite: 'auto' })
+}
+
+gsap.set(centerEl.querySelectorAll('.c--slider-a__slide'), { scale: 0.85 })
+gsap.set(centerEl.querySelector('.c--slider-a__slide--active'), { scale: 1 })
+
+centerSlider.on('afterSlideChange', syncCenterScale)
+
+// ── Demo 3: depth-of-field filmstrip ─────────────────────────────────────────
+// Indexed by DISTANCE from center: dist=0 → 0px (sharp), dist=1 → 5px, dist=2 → 12px
+// Visible positions:  [0]   [1]   [2]    [3]   [4]
+// Distance from [2]:   2     1     0      1     2
+// Blur:              12px   5px   0px    5px  12px
+const BLUR_BY_DIST = [0, 5, 12]
+
+const filmSlider = new Slider('#demo-film', {
+  slidesPerPage: 5,
+  gutter: 6,
+  loop: true,
+  speed: 500,
+  plugins: [arrows()],
+})
+
+const filmSlides = filmSlider.slides
+
+function applyFilmBlur(activeIndex: number) {
+  const n = filmSlides.length
+  filmSlides.forEach((slide, i) => {
+    const raw  = ((i - activeIndex - 2) % n + n) % n
+    const dist = Math.min(raw, n - raw)
+    const px   = BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]
+    gsap.to(slide, { filter: `blur(${px}px)`, duration: 0.45, ease: 'power2.out' })
+  })
+}
+
+// Set initial state without animating
+filmSlides.forEach((slide, i) => {
+  const n    = filmSlides.length
+  const raw  = ((i - filmSlider.activeIndex - 2) % n + n) % n
+  const dist = Math.min(raw, n - raw)
+  gsap.set(slide, { filter: `blur(${BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]}px)` })
+})
+
+filmSlider.on('afterSlideChange', ({ index }: { index: number }) => applyFilmBlur(index))
 </script>
