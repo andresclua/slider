@@ -19,4 +19,23 @@ const { title = 'SliderKit', description = 'A modern, accessible slider library'
 <body>
   <slot />
 </body>
+<script>
+import Boostify from 'boostify'
+const bstf = new Boostify()
+bstf.onload({
+  worker: true,
+  callback: () => {
+    const s = document.createElement('script')
+    s.async = true
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-SLYSZRXSQ2'
+    s.onload = () => {
+      window.dataLayer = window.dataLayer || []
+      function gtag(...args: unknown[]) { window.dataLayer.push(args) }
+      gtag('js', new Date())
+      gtag('config', 'G-SLYSZRXSQ2')
+    }
+    document.head.appendChild(s)
+  },
+})
+</script>
 </html>
