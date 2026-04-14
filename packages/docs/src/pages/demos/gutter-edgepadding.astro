@@ -181,7 +181,7 @@ slider.on('afterSlideChange', syncScale)`}
   </DemoViewer>
   <DemoViewer
     title="Depth-of-field filmstrip (GSAP blur)"
-    description="5 slides are visible at once. The center slide is always sharp — adjacent slides get progressively more blur, mimicking a camera's depth of field. GSAP animates filter:blur() on every afterSlideChange so the blur transition is smooth rather than a hard swap."
+    description="5 slides visible at once, infinite loop. The center slide is always sharp — adjacent slides blur progressively outward, mimicking a camera's depth of field. Blur is measured from each slide's visual center position so it works correctly on real slides and loop clones alike."
     html={`<div class="film-wrap">
   <div class="c--slider-a" id="my-slider">
     <div class="c--slider-a__wrapper">
@@ -193,6 +193,8 @@ slider.on('afterSlideChange', syncScale)`}
       <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof6/600/360')"></div>
       <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof7/600/360')"></div>
       <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof8/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof9/600/360')"></div>
+      <div class="c--slider-a__slide film-slide" style="background-image:url('https://picsum.photos/seed/dof10/600/360')"></div>
     </div>
   </div>
 </div>`}
@@ -208,7 +210,6 @@ slider.on('afterSlideChange', syncScale)`}
   background-position: center;
   will-change: filter;
 }
-
 .c--slider-a__arrow {
   position: absolute;
   top: 50%; transform: translateY(-50%);
@@ -224,42 +225,39 @@ slider.on('afterSlideChange', syncScale)`}
 import { arrows } from '@acslider/plugins'
 import { gsap } from 'gsap'
 
-// Blur indexed by DISTANCE from center (dist=0 → sharp, dist=1 → soft, dist=2 → heavy)
-// Visible positions:  [0]   [1]   [2]    [3]   [4]
-// Distance from [2]:   2     1     0      1     2
-// Blur applied:      12px   5px   0px    5px  12px
-const BLUR_BY_DIST = [0, 5, 12]
+// Blur by visual distance from container centre — works on real slides AND loop clones
+// slot:  [0]   [1]   [2]    [3]   [4]
+// dist:   2     1     0      1     2
+// blur: 12px   5px   0px    5px  12px
+const BLUR_BY_DIST = [0, 2, 4]
 
 const slider = new Slider('#my-slider', {
   slidesPerPage: 5,
-  gutter: 6,
+  gutter: 24,
   loop: true,
   speed: 500,
   plugins: [arrows()],
 })
 
-const slides = slider.slides
+const container = document.querySelector('#my-slider')
 
-function applyBlur(activeIndex) {
-  const n = slides.length
-  // center of visible window = activeIndex + 2
-  slides.forEach((slide, i) => {
-    const raw  = ((i - activeIndex - 2) % n + n) % n  // wrap-safe offset from center
-    const dist = Math.min(raw, n - raw)                // shortest circular distance
-    const px   = BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]
+function applyBlur() {
+  const cRect      = container.getBoundingClientRect()
+  const centerX    = cRect.left + cRect.width / 2
+  const allSlides  = container.querySelectorAll('.c--slider-a__slide')
+  const slideW     = allSlides[0]?.getBoundingClientRect().width ?? 1
+
+  allSlides.forEach(slide => {
+    const r     = slide.getBoundingClientRect()
+    const sx    = r.left + r.width / 2
+    const dist  = Math.round(Math.abs(sx - centerX) / (slideW + 6))
+    const px    = BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]
     gsap.to(slide, { filter: \`blur(\${px}px)\`, duration: 0.45, ease: 'power2.out' })
   })
 }
 
-// Set initial state without animating
-slides.forEach((slide, i) => {
-  const n    = slides.length
-  const raw  = ((i - slider.activeIndex - 2) % n + n) % n
-  const dist = Math.min(raw, n - raw)
-  gsap.set(slide, { filter: \`blur(\${BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]}px)\` })
-})
-
-slider.on('afterSlideChange', ({ index }) => applyBlur(index))`}
+applyBlur()
+slider.on('afterSlideChange', applyBlur)`}
   >
     <div class="film-wrap" id="film-outer">
       <div class="c--slider-a" id="demo-film">
@@ -272,6 +270,152 @@ slider.on('afterSlideChange', ({ index }) => applyBlur(index))`}
           <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof6/600/360')"></div>
           <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof7/600/360')"></div>
           <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof8/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof9/600/360')"></div>
+          <div class="c--slider-a__slide film-slide" data-slide style="background-image:url('https://picsum.photos/seed/dof10/600/360')"></div>
+        </div>
+      </div>
+    </div>
+  </DemoViewer>
+
+  <DemoViewer
+    title="Fan rotation — cards with GSAP rotate"
+    description="5 cards visible at once. The center card sits flat (0°) and adjacent cards tilt progressively up to ±12°, creating a hand-of-cards fan effect. Each card has a cover image and a short label at the bottom left. GSAP animates the rotation on every afterSlideChange."
+    html={`<div class="fan-wrap">
+  <div class="c--slider-a" id="my-slider">
+    <div class="c--slider-a__wrapper">
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan1/600/400')">
+        <span class="rot-label">Mountain</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan2/600/400')">
+        <span class="rot-label">Ocean</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan3/600/400')">
+        <span class="rot-label">Forest</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan4/600/400')">
+        <span class="rot-label">Desert</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan5/600/400')">
+        <span class="rot-label">City</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan6/600/400')">
+        <span class="rot-label">Coast</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan7/600/400')">
+        <span class="rot-label">Valley</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan8/600/400')">
+        <span class="rot-label">Canyon</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan9/600/400')">
+        <span class="rot-label">Lake</span>
+      </div>
+      <div class="c--slider-a__slide rot-card" style="background-image:url('https://picsum.photos/seed/fan10/600/400')">
+        <span class="rot-label">Meadow</span>
+      </div>
+    </div>
+  </div>
+</div>`}
+    css={`.fan-wrap {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f3f4f6;
+  padding: 32px 0;
+}
+.fan-wrap .c--slider-a {
+  overflow: visible;
+  background: transparent;
+}
+.rot-card {
+  height: 220px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transform-origin: center bottom;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+  overflow: hidden;
+  will-change: transform;
+}
+.rot-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
+}
+.rot-label {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 1;
+}
+.c--slider-a__arrow {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  z-index: 10; width: 36px; height: 36px;
+  border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.c--slider-a__arrow--prev { left: 8px; }
+.c--slider-a__arrow--next { right: 8px; }`}
+    js={`import { Slider } from '@acslider/core'
+import { arrows } from '@acslider/plugins'
+import { gsap } from 'gsap'
+
+// Rotation by visual position: center slot = 0°, ±6° per step, capped ±12°
+// Works on real slides AND loop clones via getBoundingClientRect
+
+const slider = new Slider('#my-slider', {
+  slidesPerPage: 5,
+  gutter: 24,
+  loop: true,
+  speed: 500,
+  plugins: [arrows()],
+})
+
+const container = document.querySelector('#my-slider')
+const wrapper   = container.querySelector('.c--slider-a__wrapper')
+
+function applyRotation(snap = false) {
+  // offsetLeft is layout-based (unaffected by CSS rotation on slides).
+  // Adding wrapper.style.transform's translateX gives position within the container.
+  // Works at init AND on loop clones without any timing issues.
+  const tx     = new DOMMatrix(wrapper.style.transform).m41
+  const cx     = container.offsetWidth / 2
+  const slideW = slider.slides[0].offsetWidth || 1
+
+  container.querySelectorAll('.c--slider-a__slide').forEach(slide => {
+    const center = slide.offsetLeft + tx + slide.offsetWidth / 2
+    const slot   = Math.round((center - cx) / (slideW + 24))
+    const deg    = Math.max(-12, Math.min(12, slot * 6))
+    if (snap) gsap.set(slide, { rotation: deg })
+    else      gsap.to(slide,  { rotation: deg, duration: 0.45, ease: 'power2.out' })
+  })
+}
+
+applyRotation(true)
+slider.on('afterSlideChange', () => applyRotation())`}
+  >
+    <div class="fan-wrap" id="fan-outer">
+      <div class="c--slider-a" id="demo-fan">
+        <div class="c--slider-a__wrapper">
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan1/600/400')"><span class="rot-label">Mountain</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan2/600/400')"><span class="rot-label">Ocean</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan3/600/400')"><span class="rot-label">Forest</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan4/600/400')"><span class="rot-label">Desert</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan5/600/400')"><span class="rot-label">City</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan6/600/400')"><span class="rot-label">Coast</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan7/600/400')"><span class="rot-label">Valley</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan8/600/400')"><span class="rot-label">Canyon</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan9/600/400')"><span class="rot-label">Lake</span></div>
+          <div class="c--slider-a__slide rot-card" data-slide style="background-image:url('https://picsum.photos/seed/fan10/600/400')"><span class="rot-label">Meadow</span></div>
         </div>
       </div>
     </div>
@@ -302,7 +446,10 @@ slider.on('afterSlideChange', ({ index }) => applyBlur(index))`}
 #film-outer {
   overflow: hidden;
   border-radius: 8px;
-  background: #111;
+  background: #fff;
+}
+#demo-film {
+  background: transparent;
 }
 #demo-film .film-slide {
   height: 240px;
@@ -314,6 +461,46 @@ slider.on('afterSlideChange', ({ index }) => applyBlur(index))`}
 #demo-film .c--slider-a__arrow {
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(4px);
+}
+
+/* Fan rotation demo */
+#fan-outer {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f3f4f6;
+  padding: 32px 0;
+}
+#demo-fan {
+  overflow: visible;
+  background: transparent;
+}
+#demo-fan .rot-card {
+  height: 220px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transform-origin: center bottom;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+  overflow: hidden;
+  will-change: transform;
+}
+#demo-fan .rot-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
+}
+#demo-fan .rot-label {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 1;
 }
 </style>
 
@@ -359,16 +546,16 @@ gsap.set(centerEl.querySelector('.c--slider-a__slide--active'), { scale: 1 })
 
 centerSlider.on('afterSlideChange', syncCenterScale)
 
-// ── Demo 3: depth-of-field filmstrip ─────────────────────────────────────────
-// Indexed by DISTANCE from center: dist=0 → 0px (sharp), dist=1 → 5px, dist=2 → 12px
-// Visible positions:  [0]   [1]   [2]    [3]   [4]
-// Distance from [2]:   2     1     0      1     2
-// Blur:              12px   5px   0px    5px  12px
-const BLUR_BY_DIST = [0, 5, 12]
+// ── Demo 3: depth-of-field filmstrip (infinite loop) ─────────────────────────
+// Blur indexed by DISTANCE from center of the visible 5-slide window:
+//   slot position:  [0]   [1]   [2]    [3]   [4]
+//   dist from [2]:   2     1     0      1     2
+//   blur:          12px   5px   0px    5px  12px
+const FILM_BLUR = [0, 2, 4] // index = distance from center
 
 const filmSlider = new Slider('#demo-film', {
   slidesPerPage: 5,
-  gutter: 6,
+  gutter: 24,
   loop: true,
   speed: 500,
   plugins: [arrows()],
@@ -376,23 +563,54 @@ const filmSlider = new Slider('#demo-film', {
 
 const filmSlides = filmSlider.slides
 
-function applyFilmBlur(activeIndex: number) {
+function applyFilmBlur(activeIdx: number, snap = false) {
   const n = filmSlides.length
   filmSlides.forEach((slide, i) => {
-    const raw  = ((i - activeIndex - 2) % n + n) % n
+    // wrap-safe distance from center of visible window (activeIdx + 2)
+    const raw  = ((i - activeIdx - 2) % n + n) % n
     const dist = Math.min(raw, n - raw)
-    const px   = BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]
-    gsap.to(slide, { filter: `blur(${px}px)`, duration: 0.45, ease: 'power2.out' })
+    const px   = FILM_BLUR[Math.min(dist, FILM_BLUR.length - 1)]
+    if (snap) gsap.set(slide, { filter: `blur(${px}px)` })
+    else      gsap.to(slide,  { filter: `blur(${px}px)`, duration: 0.45, ease: 'power2.out' })
   })
 }
 
-// Set initial state without animating
-filmSlides.forEach((slide, i) => {
-  const n    = filmSlides.length
-  const raw  = ((i - filmSlider.activeIndex - 2) % n + n) % n
-  const dist = Math.min(raw, n - raw)
-  gsap.set(slide, { filter: `blur(${BLUR_BY_DIST[Math.min(dist, BLUR_BY_DIST.length - 1)]}px)` })
-})
+// Wait one frame so the slider has laid out slide widths before setting blur
+requestAnimationFrame(() => applyFilmBlur(filmSlider.activeIndex, true))
 
 filmSlider.on('afterSlideChange', ({ index }: { index: number }) => applyFilmBlur(index))
+
+// ── Demo 4: fan rotation (infinite loop) ─────────────────────────────────────
+const fanSlider = new Slider('#demo-fan', {
+  slidesPerPage: 5,
+  gutter: 24,
+  loop: true,
+  speed: 500,
+  plugins: [arrows()],
+})
+
+const fanContainer  = document.querySelector('#demo-fan')!
+const fanWrapper    = fanContainer.querySelector<HTMLElement>('.c--slider-a__wrapper')!
+
+function applyFanRotation(snap = false) {
+  // Use offsetLeft (layout coords, unaffected by rotation transforms) +
+  // the wrapper's translateX so we get position relative to the container.
+  // This works at init AND for clones without any timing issues.
+  const tx      = new DOMMatrix(fanWrapper.style.transform).m41   // wrapper translateX
+  const cw      = (fanContainer as HTMLElement).offsetWidth
+  const cx      = cw / 2                                          // container center
+  const slideW  = (fanSlider.slides[0] as HTMLElement).offsetWidth || 1
+
+  fanContainer.querySelectorAll<HTMLElement>('.c--slider-a__slide').forEach(slide => {
+    const slideCenter = slide.offsetLeft + tx + slide.offsetWidth / 2
+    const slot = Math.round((slideCenter - cx) / (slideW + 24))
+    const deg  = Math.max(-12, Math.min(12, slot * 6))
+    if (snap) gsap.set(slide, { rotation: deg })
+    else      gsap.to(slide,  { rotation: deg, duration: 0.45, ease: 'power2.out' })
+  })
+}
+
+// Direct call — slider sets wrapper.style.transform synchronously in its constructor
+applyFanRotation(true)
+fanSlider.on('afterSlideChange', () => applyFanRotation())
 </script>

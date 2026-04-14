@@ -25,6 +25,7 @@ export const docsNav: NavGroup[] = [
       { label: 'Options', href: '/docs/options' },
       { label: 'Methods', href: '/docs/methods' },
       { label: 'Events', href: '/docs/events' },
+      { label: 'Infinite Loop', href: '/docs/loop' },
       { label: 'Breakpoints', href: '/docs/breakpoints' },
       { label: 'Accessibility', href: '/docs/accessibility' },
       { label: 'SSR', href: '/docs/ssr' },

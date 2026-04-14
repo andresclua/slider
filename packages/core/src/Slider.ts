@@ -47,6 +47,7 @@ export class Slider implements SliderInstance {
   private frozen: boolean = false
   private disabled: boolean = false
   private originalContainer: HTMLElement
+  private loopEndListener: ((e: TransitionEvent) => void) | null = null
 
   constructor(container: HTMLElement | string, options: SliderOptions = {}) {
     if (!isBrowser()) {
@@ -255,6 +256,22 @@ export class Slider implements SliderInstance {
     if (this.guardDestroyed('goTo')) return
     if (!this.isOn) return
 
+    // Seamless infinite loop: animate through clone then silently jump to real slide
+    if (this.mergedOptions.loop && this.slides.length > 1) {
+      const slidesPerPage = (this.mergedOptions.slidesPerPage as number) || 1
+      const last = Math.max(this.slides.length - slidesPerPage, 0)
+      if (last > 0) {
+        if (target === 'next' && this.activeIndex >= last) {
+          this.handleLoopBoundary(this.slides.length, 0, 'next')
+          return
+        }
+        if (target === 'prev' && this.activeIndex <= 0) {
+          this.handleLoopBoundary(-1, last, 'prev')
+          return
+        }
+      }
+    }
+
     const index = this.slideEngine.resolve(target)
     if (index === null) return
 
@@ -415,7 +432,11 @@ export class Slider implements SliderInstance {
     // 3. A11y
     this.ariaManager?.destroy()
 
-    // 4. Loop clones
+    // 4. Loop clones & pending loop transition
+    if (this.loopEndListener) {
+      this.wrapper?.removeEventListener('transitionend', this.loopEndListener)
+      this.loopEndListener = null
+    }
     this.loopManager?.destroy()
 
     // 5. DOM restoration
@@ -477,12 +498,14 @@ export class Slider implements SliderInstance {
   //  PRIVATE
   // ═══════════════════════════
 
-  private applyLayout(): void {
+  private applyLayout(overrides: { virtualIndex?: number; instant?: boolean } = {}): void {
     const isHorizontal = this.mergedOptions.direction !== 'vertical'
     const slidesPerPage = (this.mergedOptions.slidesPerPage as number) || 1
     const gutter = this.mergedOptions.gutter ?? 0
     const edgePadding = this.mergedOptions.edgePadding ?? 0
-    const speed = this.reducedMotion.isReduced() ? 0 : (this.mergedOptions.speed ?? 300)
+    const baseSpeed = this.reducedMotion.isReduced() ? 0 : (this.mergedOptions.speed ?? 300)
+    const speed = overrides.instant ? 0 : baseSpeed
+    const activeIndex = overrides.virtualIndex ?? this.activeIndex
 
     const containerSize = isHorizontal
       ? this.container.offsetWidth - edgePadding * 2
@@ -508,7 +531,7 @@ export class Slider implements SliderInstance {
 
     // Account for prepended loop clones in the translate offset
     const clonesBeforeCount = this.loopManager?.clonesBefore ?? 0
-    const offset = -((this.activeIndex + clonesBeforeCount) * (slideSize + gutter)) + edgePadding
+    const offset = -((activeIndex + clonesBeforeCount) * (slideSize + gutter)) + edgePadding
     setTransition(this.wrapper, speed)
 
     if (isHorizontal) {
@@ -516,6 +539,70 @@ export class Slider implements SliderInstance {
     } else {
       setTranslate(this.wrapper, 0, offset)
     }
+  }
+
+  /** Animate to a clone position then silently jump back to the real slide */
+  private handleLoopBoundary(virtualIndex: number, targetIndex: number, direction: 'next' | 'prev'): void {
+    const fromIndex = this.activeIndex
+
+    // Clean up any pending listener from a previous interrupted transition
+    if (this.loopEndListener) {
+      this.wrapper.removeEventListener('transitionend', this.loopEndListener)
+      this.loopEndListener = null
+    }
+
+    this.eventBus.emit('beforeSlideChange', { from: fromIndex, to: targetIndex, direction, slider: this })
+    this.eventBus.emit('beforeTransitionStart', { from: fromIndex, to: targetIndex, direction, slider: this })
+
+    const speed = this.reducedMotion.isReduced() ? 0 : (this.mergedOptions.speed ?? 300)
+
+    if (speed === 0) {
+      // No animation — jump directly to the real slide
+      this.commitLoopJump(targetIndex, fromIndex)
+      return
+    }
+
+    // Animate to the clone position
+    this.applyLayout({ virtualIndex })
+
+    // After the CSS transition ends, silently teleport to the real slide position
+    this.loopEndListener = (e: TransitionEvent) => {
+      if (e.target !== this.wrapper || e.propertyName !== 'transform') return
+      this.wrapper.removeEventListener('transitionend', this.loopEndListener!)
+      this.loopEndListener = null
+      this.commitLoopJump(targetIndex, fromIndex)
+    }
+    this.wrapper.addEventListener('transitionend', this.loopEndListener)
+  }
+
+  /** Silently commit the real slide index after a loop boundary animation */
+  private commitLoopJump(targetIndex: number, fromIndex: number): void {
+    this.slideEngine.commit(targetIndex)
+    this.activeIndex = targetIndex
+    this.previousIndex = fromIndex
+
+    // Instant jump — no transition
+    this.applyLayout({ instant: true })
+    this.updateSlideClasses()
+    this.ariaManager.update(this.activeIndex)
+
+    this.eventBus.emit('afterSlideChange', {
+      index: this.activeIndex,
+      previousIndex: this.previousIndex,
+      slide: this.slides[this.activeIndex],
+      slider: this,
+    })
+    this.eventBus.emit('afterTransitionEnd', {
+      index: this.activeIndex,
+      previousIndex: this.previousIndex,
+      slide: this.slides[this.activeIndex],
+      slider: this,
+    })
+    this.eventBus.emit('progress', {
+      progress: this.progress,
+      activeIndex: this.activeIndex,
+      slider: this,
+    })
   }
 
   private updateSlideClasses(): void {

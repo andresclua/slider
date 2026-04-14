@@ -39,6 +39,14 @@ export const DEMOS: DemoEntry[] = [
     group: 'core',
   },
   {
+    slug: 'infinite-loop',
+    label: 'Infinite Loop',
+    title: 'Infinite Loop',
+    description: 'Enable seamless infinite navigation with loop: true. Boundary slides are cloned in the DOM so every transition — including last→first and first→last — looks continuous with no visible jump.',
+    tags: ['core', 'loop', 'infinite', 'clones', 'seamless', 'wrap'],
+    group: 'core',
+  },
+  {
     slug: 'start-index',
     label: 'Start Index',
     title: 'Start Index',
