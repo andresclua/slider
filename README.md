@@ -1,7 +1,6 @@
-# ACSlider
+# SliderKit
 
-[![CI](https://github.com/andresclua/acslider/actions/workflows/ci.yml/badge.svg)](https://github.com/andresclua/acslider/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@acslider/core)](https://www.npmjs.com/package/@acslider/core)
+[![npm version](https://img.shields.io/npm/v/@andresclua/sliderkit)](https://www.npmjs.com/package/@andresclua/sliderkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red)](https://github.com/sponsors/andresclua)
 
@@ -11,24 +10,22 @@ A modern, accessible, TypeScript-first slider library with WebGL effects, CSS tr
 
 | Package | Description | Size |
 |---|---|---|
-| [`@acslider/core`](packages/core) | Core slider engine | <8kb gzipped |
-| [`@acslider/plugins`](packages/plugins) | UI plugins (pagination, arrows, autoplay…) | <12kb gzipped |
-| [`@acslider/effects`](packages/effects) | CSS transition effects | <1kb each |
-| [`@acslider/webgl`](packages/webgl) | WebGL renderer (OGL) + effects | <20kb gzipped |
+| [`@andresclua/sliderkit`](packages/core) | Core slider engine | ~7kb gzipped |
+| [`@andresclua/sliderkit-plugins`](packages/plugins) | UI plugins (pagination, arrows, autoplay…) | ~4kb gzipped |
+| [`@andresclua/sliderkit-effects`](packages/effects) | CSS transition effects | ~2kb gzipped |
+| [`@andresclua/sliderkit-webgl`](packages/webgl) | WebGL renderer (OGL) + effects | ~4kb gzipped |
 
 ## Quick Start
 
 ```bash
-npm install @acslider/core @acslider/plugins
+npm install @andresclua/sliderkit @andresclua/sliderkit-plugins
 ```
 
 ```typescript
-import { Slider } from '@acslider/core'
-import { pagination, autoplay, arrows } from '@acslider/plugins'
-import '@acslider/core/css/slider.css'
-import '@acslider/plugins/css/plugins.css'
+import { Slider } from '@andresclua/sliderkit'
+import { pagination, autoplay, arrows } from '@andresclua/sliderkit-plugins'
 
-const slider = new Slider(document.querySelector('[data-slider]'), {
+const slider = new Slider('#my-slider', {
   slidesPerPage: 3,
   gutter: 16,
   loop: true,
@@ -42,7 +39,7 @@ const slider = new Slider(document.querySelector('[data-slider]'), {
 
 ## Documentation
 
-Visit [slider.andresclua.com](https://slider.andresclua.com) for full documentation and demos.
+Visit [sliderkit.andresclua.com](https://sliderkit.andresclua.com) for full documentation and demos.
 
 ## Development
 
@@ -53,16 +50,13 @@ pnpm install
 # Build all packages
 pnpm build
 
-# Run tests
-pnpm test
-
-# Start playground
+# Start docs
 pnpm dev
 ```
 
 ## Support this project
 
-If ACSlider is useful to you, consider [sponsoring the development](https://github.com/sponsors/andresclua).
+If SliderKit is useful to you, consider [sponsoring the development](https://github.com/sponsors/andresclua).
 
 ## License
 
