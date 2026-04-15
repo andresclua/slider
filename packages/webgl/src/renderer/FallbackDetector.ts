@@ -1,4 +1,4 @@
-import { isBrowser } from '@acslider/core'
+import { isBrowser } from '@andresclua/sliderkit'
 
 export function isWebGLSupported(): boolean {
   if (!isBrowser()) return false

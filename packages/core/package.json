@@ -1,7 +1,7 @@
 {
-  "name": "@acslider/core",
+  "name": "@andresclua/sliderkit",
   "version": "0.1.0",
-  "description": "ACSlider core engine — accessible, TypeScript-first slider",
+  "description": "SliderKit core engine — accessible, TypeScript-first slider",
   "type": "module",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.mjs",
@@ -37,7 +37,7 @@
   "keywords": [
     "slider",
     "carousel",
-    "acslider",
+    "sliderkit",
     "typescript",
     "accessible"
   ],

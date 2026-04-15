@@ -1,4 +1,4 @@
-import type { SliderInstance } from '@acslider/core'
+import type { SliderInstance } from '@andresclua/sliderkit'
 import type { WebGLEffect } from '../types'
 import { WebGLRenderer } from '../renderer/WebGLRenderer'
 

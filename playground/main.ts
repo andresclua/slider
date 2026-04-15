@@ -1,5 +1,5 @@
-import { Slider } from '@acslider/core'
-import { pagination, autoplay, arrows } from '@acslider/plugins'
+import { Slider } from '@andresclua/sliderkit'
+import { pagination, autoplay, arrows } from '@andresclua/sliderkit-plugins'
 
 // Basic slider
 const basicEl = document.getElementById('slider-basic')

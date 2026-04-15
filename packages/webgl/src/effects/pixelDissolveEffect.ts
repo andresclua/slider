@@ -1,7 +1,7 @@
 import { BaseEffect } from './BaseEffect'
 import type { PixelDissolveEffectOptions } from '../types'
 import type { WebGLRendererContext } from '../types'
-import { logger } from '@acslider/core'
+import { logger } from '@andresclua/sliderkit'
 
 export class PixelDissolveEffect extends BaseEffect {
   readonly name = 'pixelDissolve'

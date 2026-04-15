@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@acslider/core": "workspace:*",
-    "@acslider/plugins": "workspace:*",
-    "@acslider/effects": "workspace:*",
-    "@acslider/webgl": "workspace:*"
+    "@andresclua/sliderkit": "workspace:*",
+    "@andresclua/sliderkit-plugins": "workspace:*",
+    "@andresclua/sliderkit-effects": "workspace:*",
+    "@andresclua/sliderkit-webgl": "workspace:*"
   },
   "devDependencies": {
     "vite": "^5.2.12",

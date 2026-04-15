@@ -1,7 +1,7 @@
 import { BaseEffect } from './BaseEffect'
 import type { ParallaxDepthEffectOptions } from '../types'
 import type { WebGLRendererContext } from '../types'
-import { logger } from '@acslider/core'
+import { logger } from '@andresclua/sliderkit'
 
 export class ParallaxDepthEffect extends BaseEffect {
   readonly name = 'parallaxDepth'

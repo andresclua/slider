@@ -2,10 +2,10 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "paths": {
-      "@acslider/core": ["../core/src/index.ts"],
-      "@acslider/plugins": ["../plugins/src/index.ts"],
-      "@acslider/effects": ["../effects/src/index.ts"],
-      "@acslider/webgl": ["../webgl/src/index.ts"]
+      "@andresclua/sliderkit": ["../core/src/index.ts"],
+      "@andresclua/sliderkit-plugins": ["../plugins/src/index.ts"],
+      "@andresclua/sliderkit-effects": ["../effects/src/index.ts"],
+      "@andresclua/sliderkit-webgl": ["../webgl/src/index.ts"]
     }
   }
 }

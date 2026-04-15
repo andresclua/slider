@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial monorepo setup
-- `@acslider/core` — slider engine with full TypeScript types
-- `@acslider/plugins` — pagination, autoplay, arrows, thumbnails, and more
-- `@acslider/effects` — CSS transition effects (fade, cube, coverflow, flip, cards, creative)
-- `@acslider/webgl` — WebGL renderer with displacement, rgb-shift, pixel-dissolve, parallax effects
+- `@andresclua/sliderkit` — slider engine with full TypeScript types
+- `@andresclua/sliderkit-plugins` — pagination, autoplay, arrows, thumbnails, and more
+- `@andresclua/sliderkit-effects` — CSS transition effects (fade, cube, coverflow, flip, cards, creative)
+- `@andresclua/sliderkit-webgl` — WebGL renderer with displacement, rgb-shift, pixel-dissolve, parallax effects
 - GSAP integration via event hooks
 - Accessible by default (ARIA, keyboard nav, prefers-reduced-motion)
 - SSR-safe (guards for window/document)

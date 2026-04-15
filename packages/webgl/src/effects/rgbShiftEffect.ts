@@ -1,7 +1,7 @@
 import { BaseEffect } from './BaseEffect'
 import type { RGBShiftEffectOptions } from '../types'
 import type { WebGLRendererContext } from '../types'
-import { logger } from '@acslider/core'
+import { logger } from '@andresclua/sliderkit'
 
 export class RGBShiftEffect extends BaseEffect {
   readonly name = 'rgbShift'

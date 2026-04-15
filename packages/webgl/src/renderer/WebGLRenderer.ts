@@ -1,7 +1,7 @@
 import { CanvasManager } from './CanvasManager'
 import { TextureLoader } from './TextureLoader'
 import { isWebGLSupported } from './FallbackDetector'
-import { logger } from '@acslider/core'
+import { logger } from '@andresclua/sliderkit'
 
 export interface WebGLRendererConfig {
   container: HTMLElement

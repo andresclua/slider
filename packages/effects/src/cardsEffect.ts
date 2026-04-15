@@ -1,6 +1,6 @@
-import type { SliderPlugin } from '@acslider/core'
-import type { SliderInstance } from '@acslider/core'
-import type { AfterSlideChangePayload } from '@acslider/core'
+import type { SliderPlugin } from '@andresclua/sliderkit'
+import type { SliderInstance } from '@andresclua/sliderkit'
+import type { AfterSlideChangePayload } from '@andresclua/sliderkit'
 
 export interface CardsEffectOptions {
   slideShadows?: boolean

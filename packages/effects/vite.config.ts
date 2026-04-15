@@ -11,14 +11,14 @@ export default defineConfig({
       fileName: (format) => (format === 'es' ? 'index.mjs' : 'index.umd.js'),
     },
     rollupOptions: {
-      external: ['@acslider/core'],
-      output: { globals: { '@acslider/core': 'ACSliderCore' } },
+      external: ['@andresclua/sliderkit'],
+      output: { globals: { '@andresclua/sliderkit': 'ACSliderCore' } },
     },
     minify: true,
     sourcemap: true,
   },
   plugins: [dts({ insertTypesEntry: true, outDir: 'dist' })],
   resolve: {
-    alias: { '@acslider/core': resolve(__dirname, '../core/src/index.ts') },
+    alias: { '@andresclua/sliderkit': resolve(__dirname, '../core/src/index.ts') },
   },
 })

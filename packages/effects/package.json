@@ -1,5 +1,5 @@
 {
-  "name": "@acslider/effects",
+  "name": "@andresclua/sliderkit-effects",
   "version": "0.1.0",
   "description": "ACSlider CSS transition effects — fade, cube, coverflow, flip, cards, creative",
   "type": "module",
@@ -22,13 +22,13 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@acslider/core": "workspace:*"
+    "@andresclua/sliderkit": "workspace:*"
   },
   "devDependencies": {
     "vite": "^5.2.12",
     "vite-plugin-dts": "^3.9.1",
     "typescript": "^5.4.5",
-    "@acslider/core": "workspace:*"
+    "@andresclua/sliderkit": "workspace:*"
   },
   "author": "Andres Clua",
   "license": "MIT"

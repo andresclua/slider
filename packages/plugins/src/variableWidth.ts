@@ -1,5 +1,5 @@
-import type { SliderPlugin } from '@acslider/core'
-import type { SliderInstance } from '@acslider/core'
+import type { SliderPlugin } from '@andresclua/sliderkit'
+import type { SliderInstance } from '@andresclua/sliderkit'
 
 export interface VariableWidthOptions {
   adaptiveHeight?: boolean

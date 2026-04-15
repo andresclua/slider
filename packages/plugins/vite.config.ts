@@ -11,10 +11,10 @@ export default defineConfig({
       fileName: (format) => (format === 'es' ? 'index.mjs' : 'index.umd.js'),
     },
     rollupOptions: {
-      external: ['@acslider/core'],
+      external: ['@andresclua/sliderkit'],
       output: {
         globals: {
-          '@acslider/core': 'ACSliderCore',
+          '@andresclua/sliderkit': 'ACSliderCore',
         },
       },
     },
@@ -26,7 +26,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@acslider/core': resolve(__dirname, '../core/src/index.ts'),
+      '@andresclua/sliderkit': resolve(__dirname, '../core/src/index.ts'),
     },
   },
 })

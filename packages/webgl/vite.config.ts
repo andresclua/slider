@@ -11,10 +11,10 @@ export default defineConfig({
       fileName: (format) => (format === 'es' ? 'index.mjs' : 'index.umd.js'),
     },
     rollupOptions: {
-      external: ['@acslider/core', 'gsap'],
+      external: ['@andresclua/sliderkit', 'gsap'],
       output: {
         globals: {
-          '@acslider/core': 'ACSliderCore',
+          '@andresclua/sliderkit': 'ACSliderCore',
           'gsap': 'gsap',
         },
       },
@@ -24,7 +24,7 @@ export default defineConfig({
   },
   plugins: [dts({ insertTypesEntry: true, outDir: 'dist' })],
   resolve: {
-    alias: { '@acslider/core': resolve(__dirname, '../core/src/index.ts') },
+    alias: { '@andresclua/sliderkit': resolve(__dirname, '../core/src/index.ts') },
   },
   assetsInclude: ['**/*.vert', '**/*.frag', '**/*.glsl'],
 })

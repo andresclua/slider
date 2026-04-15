@@ -10,7 +10,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@acslider/core': resolve(__dirname, '../core/src/index.ts'),
+      '@andresclua/sliderkit': resolve(__dirname, '../core/src/index.ts'),
     },
   },
 })

@@ -9,10 +9,10 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@acslider/core": "workspace:*",
-    "@acslider/effects": "workspace:*",
-    "@acslider/plugins": "workspace:*",
-    "@acslider/webgl": "workspace:*",
+    "@andresclua/sliderkit": "workspace:*",
+    "@andresclua/sliderkit-effects": "workspace:*",
+    "@andresclua/sliderkit-plugins": "workspace:*",
+    "@andresclua/sliderkit-webgl": "workspace:*",
     "astro": "^4.11.0",
     "boostify": "^0.0.20",
     "gsap": "^3.15.0"

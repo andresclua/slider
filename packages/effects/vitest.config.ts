@@ -9,6 +9,6 @@ export default defineConfig({
     include: ['__tests__/**/*.test.ts'],
   },
   resolve: {
-    alias: { '@acslider/core': resolve(__dirname, '../core/src/index.ts') },
+    alias: { '@andresclua/sliderkit': resolve(__dirname, '../core/src/index.ts') },
   },
 })

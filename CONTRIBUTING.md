@@ -43,7 +43,7 @@ chore: build process or auxiliary tool changes
 
 | Package | Target (gzipped) |
 |---|---|
-| @acslider/core | <8kb |
-| @acslider/plugins (all) | <12kb |
-| @acslider/effects (each) | <1kb |
-| @acslider/webgl | <20kb |
+| @andresclua/sliderkit | <8kb |
+| @andresclua/sliderkit-plugins (all) | <12kb |
+| @andresclua/sliderkit-effects (each) | <1kb |
+| @andresclua/sliderkit-webgl | <20kb |

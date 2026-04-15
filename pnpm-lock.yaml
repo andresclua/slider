@@ -50,16 +50,16 @@ importers:
 
   packages/docs:
     dependencies:
-      '@acslider/core':
+      '@andresclua/sliderkit':
         specifier: workspace:*
         version: link:../core
-      '@acslider/effects':
+      '@andresclua/sliderkit-effects':
         specifier: workspace:*
         version: link:../effects
-      '@acslider/plugins':
+      '@andresclua/sliderkit-plugins':
         specifier: workspace:*
         version: link:../plugins
-      '@acslider/webgl':
+      '@andresclua/sliderkit-webgl':
         specifier: workspace:*
         version: link:../webgl
       astro:
@@ -74,7 +74,7 @@ importers:
 
   packages/effects:
     devDependencies:
-      '@acslider/core':
+      '@andresclua/sliderkit':
         specifier: workspace:*
         version: link:../core
       typescript:
@@ -89,7 +89,7 @@ importers:
 
   packages/plugins:
     devDependencies:
-      '@acslider/core':
+      '@andresclua/sliderkit':
         specifier: workspace:*
         version: link:../core
       typescript:
@@ -111,7 +111,7 @@ importers:
         specifier: ^1.0.3
         version: 1.0.11
     devDependencies:
-      '@acslider/core':
+      '@andresclua/sliderkit':
         specifier: workspace:*
         version: link:../core
       typescript:
@@ -126,16 +126,16 @@ importers:
 
   playground:
     dependencies:
-      '@acslider/core':
+      '@andresclua/sliderkit':
         specifier: workspace:*
         version: link:../packages/core
-      '@acslider/effects':
+      '@andresclua/sliderkit-effects':
         specifier: workspace:*
         version: link:../packages/effects
-      '@acslider/plugins':
+      '@andresclua/sliderkit-plugins':
         specifier: workspace:*
         version: link:../packages/plugins
-      '@acslider/webgl':
+      '@andresclua/sliderkit-webgl':
         specifier: workspace:*
         version: link:../packages/webgl
     devDependencies:
