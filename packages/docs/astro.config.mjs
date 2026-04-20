@@ -1,7 +1,9 @@
 import { defineConfig } from 'astro/config'
+import sitemap from '@astrojs/sitemap'
 
 export default defineConfig({
-  site: 'https://slider.andresclua.com',
+  site: 'https://sliderkit.andresclua.com',
+  integrations: [sitemap()],
   vite: {
     optimizeDeps: {
       exclude: ['vue', 'svelte'],
