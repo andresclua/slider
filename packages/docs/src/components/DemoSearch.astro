@@ -76,7 +76,6 @@ function render(q) {
       <a href="${d.href}" class="search-result-link">
         <span class="sr-title">${highlight(d.label, q)}</span>
         <span class="sr-group">${GROUP_LABELS[d.group]}</span>
-        <span class="sr-desc">${highlight(d.description, q)}</span>
       </a>`
     results.appendChild(li)
   })
@@ -191,10 +190,10 @@ input.addEventListener('keydown', e => {
 }
 
 .search-result-link {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  gap: 1px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 9px 12px;
   text-decoration: none;
   color: inherit;
@@ -210,8 +209,11 @@ input.addEventListener('keydown', e => {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
-  grid-column: 1;
-  grid-row: 1;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .sr-group {
   font-size: 0.72rem;
@@ -219,18 +221,7 @@ input.addEventListener('keydown', e => {
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  grid-column: 2;
-  grid-row: 1;
-  align-self: center;
-}
-.sr-desc {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  grid-column: 1 / -1;
-  grid-row: 2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 .search-result-link mark {
